@@ -22,13 +22,13 @@ router.post("/login", async (req, res) => {
           { username: username, userId: persistedUser.id },
           process.env.TK_PASS
         );
-        res.json({ token: token });
+        res.json({ login: true, token: token });
       } else {
-        res.json({ message: "Invalid username or password" });
+        res.json({ login: false, message: "Invalid username or password" });
       }
     });
   } else {
-    res.json({ message: "Invalid username or password" });
+    res.json({ login: false, message: "Invalid username or password" });
   }
 });
 
@@ -45,18 +45,19 @@ router.post("/register", async (req, res) => {
   if (!persistedUser) {
     bcrypt.hash(password, SALT_ROUNDS, async (error, hash) => {
       if (error) {
-        res.json({ message: "Cannot create user!" });
+        res.json({ userAdded: false, message: "Cannot create user!" });
       } else {
         const user = await models.User.build({
           username: username,
           password: hash,
           email: email,
         });
-        user.save().then((result) => res.json({ success: true }));
+        user.save().then((result) => res.json({ userAdded: true }));
       }
     });
   } else {
-    res.json({ message: "User already exists!" });
+    res.json({ userAdded: false, message: "User already exists!" });
   }
 });
+
 module.exports = router;
