@@ -2,15 +2,14 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
-// const models = require("./models");
 const cors = require("cors");
-// const jwt = require("jsonwebtoken");
-// const bcrypt = require("bcrypt");
 const userRoutes = require("./routes/users");
+const gamesRouter = require('./routes/games')
 
 app.use(cors());
 app.use(express.json());
 app.use("/user", userRoutes);
+app.use('/games', gamesRouter)
 
 app.get("/hello", (req, res) => {
   res.send("hello");
