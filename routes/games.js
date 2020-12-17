@@ -29,7 +29,28 @@ router.post('/:id/create-rating', (req,res) => {
     }else{
         res.send('Rating already created')
     }
+})
 
+router.post('/:userId/update-rating/:ratingId', (req,res) => {
+    const ratingId = req.params.ratingId
+    const userId = req.params.userId
+    const gameId = req.body.gameId
+    const gameplayRating = req.body.gameplayRating
+    const f2pRating = req.body.f2pRating
+    const playing = req.body.playing
+
+    models.UserGame.update(
+        {
+            GameId:gameId,
+            UserId:userId,
+            gameplayRating: gameplayRating,
+            f2pRating: f2pRating,
+            playing: playing
+        },
+        {where: {id: ratingId}
+    }).then((rating) => {
+        res.send('Rating Successfully Updated')
+    }) 
 })
 
 router.get('/:id', (req,res) => {
