@@ -22,7 +22,7 @@ app.post("/login", async (req, res) => {
   if (persistedUser) {
     var token = jwt.sign(
       { username: username, userId: persistedUser.id },
-      "MYSECRET125"
+      process.env.TK_PASS
     );
     res.json({ token: token });
   } else {
