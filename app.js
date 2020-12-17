@@ -6,9 +6,11 @@ const models = require("./models");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const gamesRouter = require('./routes/games')
 
 app.use(cors());
 app.use(express.json());
+app.use('/games', gamesRouter)
 
 const SALT_ROUNDS = 10;
 
