@@ -1,10 +1,15 @@
-const express = require('express')
-const router = express.Router()
-const models = require('../models')
+const express = require('express');
+const router = express.Router();
+const models = require('../models');
+const jwt = require("jsonwebtoken");
 
 
-router.post('/:id/create-rating', (req,res) => {
-    const userId = req.params.id
+router.post('/create-rating', (req,res) => {
+    let headers = req.headers['authorization'];
+    const token = headers.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.TK_PASS);
+    let userId = decoded.userId;
+
     const gameId = req.body.gameId
     const gameplayRating = req.body.gameplayRating
     const f2pRating = req.body.f2pRating
@@ -14,7 +19,10 @@ router.post('/:id/create-rating', (req,res) => {
         where: {
             UserId: userId,
             GameId: gameId}
+    }).catch((error) => {
+        res.json({message: error})
     })
+
     if(!persistedUserGame){
     let UserGame = models.UserGame.build({
         GameId:gameId,
@@ -25,15 +33,21 @@ router.post('/:id/create-rating', (req,res) => {
     })
     UserGame.save().then(()=>{
         res.send('Rating Saved')
+    }).catch((error) => {
+        res.json({message: error})
     })
     }else{
         res.send('Rating already created')
     }
 })
 
-router.post('/:userId/update-rating/:ratingId', (req,res) => {
+router.post('/update-rating/:ratingId', (req,res) => {
+    let headers = req.headers['authorization'];
+    const token = headers.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.TK_PASS);
+    let userId = decoded.userId;
+    
     const ratingId = req.params.ratingId
-    const userId = req.params.userId
     const gameId = req.body.gameId
     const gameplayRating = req.body.gameplayRating
     const f2pRating = req.body.f2pRating
@@ -50,17 +64,25 @@ router.post('/:userId/update-rating/:ratingId', (req,res) => {
         {where: {id: ratingId}
     }).then((rating) => {
         res.send('Rating Successfully Updated')
+    }).catch((error) => {
+        res.json({message: error})
     }) 
 })
 
-router.get('/:id', (req,res) => {
-    const userId = req.params.id
+router.get('/my-ratings', (req,res) => {
+    let headers = req.headers['authorization'];
+    const token = headers.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.TK_PASS);
+    let userId = decoded.userId;
+    
     models.UserGame.findAll({
         where: { UserId: userId }, include:[
             models.Game
         ]
     }).then((list) => {
         res.send(list)
+    }).catch((error) => {
+        res.json({message: error})
     })
 
 })
