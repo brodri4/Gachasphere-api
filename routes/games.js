@@ -92,6 +92,8 @@ router.get("/my-ratings", (req, res) => {
       res.json({ message: error });
     });
 });
+
+//function section
 const calRating = async (gameID) => {
   let gameRating = await models.UserGame.findAll({
     where: { GameId: gameID },
@@ -105,12 +107,25 @@ const calRating = async (gameID) => {
   averageRating = totalRating / userGame.length;
   return averageRating;
 };
+const calF2PRating = async (gameID) => {
+  let gameRating = await models.UserGame.findAll({
+    where: { GameId: gameID },
+  });
+  const userGame = gameRating.map((usergame) => {
+    return parseFloat(usergame.f2pRating);
+  });
+  totalRating = userGame.reduce((accumulator, userGame) => {
+    return accumulator + userGame;
+  });
+  averageRating = totalRating / userGame.length;
+  return averageRating;
+};
 
 const updateRating = async (gameId) => {
   let averageRating = await calRating(gameId);
-  console.log(averageRating);
+  let averageF2P = await calF2PRating(gameId);
   await models.Game.update(
-    { averageRating: averageRating },
+    { averageRating: averageRating, averageF2P: averageF2P },
     {
       where: {
         id: gameId,

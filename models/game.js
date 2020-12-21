@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       logo: DataTypes.STRING,
       reddit: DataTypes.STRING,
       averageRating: DataTypes.FLOAT,
+      averageF2P: DataTypes.FLOAT,
     },
     {
       sequelize,
