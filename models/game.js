@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Game extends Model {
     /**
@@ -10,18 +8,25 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.Game.hasMany(models.UserGame, {onDelete: 'cascade', hooks:true})
+      models.Game.hasMany(models.UserGame, {
+        onDelete: "cascade",
+        hooks: true,
+      });
     }
-  };
-  Game.init({
-    title: DataTypes.STRING,
-    releaseDate: DataTypes.STRING,
-    developer: DataTypes.STRING,
-    logo: DataTypes.STRING,
-    reddit: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Game',
-  });
+  }
+  Game.init(
+    {
+      title: DataTypes.STRING,
+      releaseDate: DataTypes.STRING,
+      developer: DataTypes.STRING,
+      logo: DataTypes.STRING,
+      reddit: DataTypes.STRING,
+      averageRating: DataTypes.FLOAT,
+    },
+    {
+      sequelize,
+      modelName: "Game",
+    }
+  );
   return Game;
 };
