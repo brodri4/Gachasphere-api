@@ -3,6 +3,15 @@ const router = express.Router();
 const models = require("../models");
 const jwt = require("jsonwebtoken");
 
+router.get('/', (req, res) => {
+  models.Game.findAll()
+  .then((result) => {
+    res.json(result)
+  }).catch((error) => {
+    res.json({ message: error });
+  })
+})
+
 router.post("/create-rating", async (req, res) => {
   let headers = req.headers["authorization"];
   const token = headers.split(" ")[1];
