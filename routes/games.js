@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const models = require("../models");
 const jwt = require("jsonwebtoken");
+const authentication = require("../authMiddleware");
 
 router.get("/", (req, res) => {
   models.Game.findAll()
@@ -13,11 +14,8 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/create-rating", async (req, res) => {
-  let headers = req.headers["authorization"];
-  const token = headers.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.TK_PASS);
-  let userId = decoded.userId;
+router.post("/create-rating", authentication, async (req, res) => {
+  const userId = res.locals.user.userId;
 
   const gameId = req.body.gameId;
   const gameplayRating = req.body.gameplayRating;
@@ -44,7 +42,6 @@ router.post("/create-rating", async (req, res) => {
     UserGame.save()
       .then(async () => {
         await updateRating(gameId);
-        // await calCurrentPlayer(gameId);
         res.send("Rating Saved");
       })
       .catch((error) => {
@@ -55,11 +52,8 @@ router.post("/create-rating", async (req, res) => {
   }
 });
 
-router.post("/update-rating/:ratingId", (req, res) => {
-  let headers = req.headers["authorization"];
-  const token = headers.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.TK_PASS);
-  let userId = decoded.userId;
+router.post("/update-rating/:ratingId", authentication, (req, res) => {
+  const userId = res.locals.user.userId;
 
   const ratingId = req.params.ratingId;
   const gameId = req.body.gameId;
@@ -86,11 +80,12 @@ router.post("/update-rating/:ratingId", (req, res) => {
     });
 });
 
-router.get("/my-ratings", (req, res) => {
-  let headers = req.headers["authorization"];
-  const token = headers.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.TK_PASS);
-  let userId = decoded.userId;
+router.get("/my-ratings", authentication, (req, res) => {
+  // let headers = req.headers["authorization"];
+  // const token = headers.split(" ")[1];
+  // const decoded = jwt.verify(token, process.env.TK_PASS);
+  // let userId = decoded.userId;
+  const userId = res.locals.user.userId;
 
   models.UserGame.findAll({
     where: { UserId: userId },
