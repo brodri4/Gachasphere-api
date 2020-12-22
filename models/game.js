@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       reddit: DataTypes.STRING,
       averageRating: DataTypes.FLOAT,
       averageF2P: DataTypes.FLOAT,
+      numberOfPlayer: DataTypes.INTEGER,
     },
     {
       sequelize,

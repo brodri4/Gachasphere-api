@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const models = require("../models");
 const jwt = require("jsonwebtoken");
+const authentication = require("../authMiddleware");
 
 router.get('/', (req, res) => {
   models.Game.findAll({
@@ -14,11 +15,8 @@ router.get('/', (req, res) => {
   })
 })
 
-router.post("/create-rating", async (req, res) => {
-  let headers = req.headers["authorization"];
-  const token = headers.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.TK_PASS);
-  let userId = decoded.userId;
+router.post("/create-rating", authentication, async (req, res) => {
+  const userId = res.locals.user.userId;
 
   const gameId = req.body.gameId;
   const gameplayRating = req.body.gameplayRating;
@@ -55,11 +53,8 @@ router.post("/create-rating", async (req, res) => {
   }
 });
 
-router.post("/update-rating/:ratingId", (req, res) => {
-  let headers = req.headers["authorization"];
-  const token = headers.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.TK_PASS);
-  let userId = decoded.userId;
+router.post("/update-rating/:ratingId", authentication, (req, res) => {
+  const userId = res.locals.user.userId;
 
   const ratingId = req.params.ratingId;
   const gameId = req.body.gameId;
@@ -86,11 +81,12 @@ router.post("/update-rating/:ratingId", (req, res) => {
     });
 });
 
-router.get("/my-ratings", (req, res) => {
-  let headers = req.headers["authorization"];
-  const token = headers.split(" ")[1];
-  const decoded = jwt.verify(token, process.env.TK_PASS);
-  let userId = decoded.userId;
+router.get("/my-ratings", authentication, (req, res) => {
+  // let headers = req.headers["authorization"];
+  // const token = headers.split(" ")[1];
+  // const decoded = jwt.verify(token, process.env.TK_PASS);
+  // let userId = decoded.userId;
+  const userId = res.locals.user.userId;
 
   models.UserGame.findAll({
     where: { UserId: userId },
@@ -135,14 +131,27 @@ const calF2PRating = async (gameID) => {
 const updateRating = async (gameId) => {
   let averageRating = await calRating(gameId);
   let averageF2P = await calF2PRating(gameId);
+  let numberOfPlayer = await calCurrentPlayer(gameId);
+  calCurrentPlayer(gameId);
   await models.Game.update(
-    { averageRating: averageRating, averageF2P: averageF2P },
+    {
+      averageRating: averageRating,
+      averageF2P: averageF2P,
+      numberOfPlayer: numberOfPlayer,
+    },
     {
       where: {
         id: gameId,
       },
     }
   );
+};
+
+const calCurrentPlayer = async (gameId) => {
+  let currentPlayerNumber = await models.UserGame.count({
+    where: { GameId: gameId, playing: "TRUE" },
+  });
+  return currentPlayerNumber;
 };
 
 module.exports = router;

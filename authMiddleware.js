@@ -3,11 +3,12 @@ const models = require("./models");
 require("dotenv").config();
 
 async function authentication(req, res, next) {
-  const headers = req.headers["authorization"];
-  const token = headers;
+  let headers = req.headers["authorization"];
+  const token = headers.split(" ")[1];
+
   if (token) {
-    const decoded = jwt.verify(headers, process.env.TK_PASS);
-    if (decode) {
+    const decoded = jwt.verify(token, process.env.TK_PASS);
+    if (decoded) {
       const username = decoded.username;
       const userId = decoded.userId;
       const persistedUser = await models.User.findOne({
@@ -16,7 +17,7 @@ async function authentication(req, res, next) {
         },
       });
       if (persistedUser) {
-        res.locals.userId = userId;
+        res.locals.user = { userId: userId };
         next();
       } else {
         res.json({ message: "You're not authorized!" });
