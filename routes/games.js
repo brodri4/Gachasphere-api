@@ -4,7 +4,9 @@ const models = require("../models");
 const jwt = require("jsonwebtoken");
 
 router.get('/', (req, res) => {
-  models.Game.findAll()
+  models.Game.findAll({
+    order: [['title', 'ASC']]
+  })
   .then((result) => {
     res.json(result)
   }).catch((error) => {
@@ -43,13 +45,13 @@ router.post("/create-rating", async (req, res) => {
     UserGame.save()
       .then(async () => {
         await updateRating(gameId);
-        res.send("Rating Saved");
+      res.send({ratingCreated: true});
       })
       .catch((error) => {
         res.json({ message: error });
       });
   } else {
-    res.send("Rating already created");
+    res.send({ratingCreated: false, message: "Rating already created"});
   }
 });
 
