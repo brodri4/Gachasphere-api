@@ -3,14 +3,15 @@ const router = express.Router();
 const models = require("../models");
 const jwt = require("jsonwebtoken");
 
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   models.Game.findAll()
-  .then((result) => {
-    res.json(result)
-  }).catch((error) => {
-    res.json({ message: error });
-  })
-})
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.json({ message: error });
+    });
+});
 
 router.post("/create-rating", async (req, res) => {
   let headers = req.headers["authorization"];
@@ -43,6 +44,7 @@ router.post("/create-rating", async (req, res) => {
     UserGame.save()
       .then(async () => {
         await updateRating(gameId);
+        // await calCurrentPlayer(gameId);
         res.send("Rating Saved");
       })
       .catch((error) => {
@@ -133,14 +135,27 @@ const calF2PRating = async (gameID) => {
 const updateRating = async (gameId) => {
   let averageRating = await calRating(gameId);
   let averageF2P = await calF2PRating(gameId);
+  let numberOfPlayer = await calCurrentPlayer(gameId);
+  calCurrentPlayer(gameId);
   await models.Game.update(
-    { averageRating: averageRating, averageF2P: averageF2P },
+    {
+      averageRating: averageRating,
+      averageF2P: averageF2P,
+      numberOfPlayer: numberOfPlayer,
+    },
     {
       where: {
         id: gameId,
       },
     }
   );
+};
+
+const calCurrentPlayer = async (gameId) => {
+  let currentPlayerNumber = await models.UserGame.count({
+    where: { GameId: gameId, playing: "TRUE" },
+  });
+  return currentPlayerNumber;
 };
 
 module.exports = router;
