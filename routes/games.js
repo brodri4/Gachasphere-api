@@ -4,15 +4,16 @@ const models = require("../models");
 const jwt = require("jsonwebtoken");
 const authentication = require("../authMiddleware");
 
-router.get("/", (req, res) => {
-  models.Game.findAll()
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((error) => {
-      res.json({ message: error });
-    });
-});
+router.get('/', (req, res) => {
+  models.Game.findAll({
+    order: [['title', 'ASC']]
+  })
+  .then((result) => {
+    res.json(result)
+  }).catch((error) => {
+    res.json({ message: error });
+  })
+})
 
 router.post("/create-rating", authentication, async (req, res) => {
   const userId = res.locals.user.userId;
@@ -42,13 +43,13 @@ router.post("/create-rating", authentication, async (req, res) => {
     UserGame.save()
       .then(async () => {
         await updateRating(gameId);
-        res.send("Rating Saved");
+      res.send({ratingCreated: true});
       })
       .catch((error) => {
         res.json({ message: error });
       });
   } else {
-    res.send("Rating already created");
+    res.send({ratingCreated: false, message: "Rating already created"});
   }
 });
 
