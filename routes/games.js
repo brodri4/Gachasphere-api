@@ -53,6 +53,21 @@ router.post("/create-rating", authentication, async (req, res) => {
   }
 });
 
+router.get("/single-rating/:id", authentication, (req, res) => {
+  const ratingId = req.params.id;
+
+  models.UserGame.findOne({
+    where: {
+      id: ratingId
+    },
+    include: [models.Game]
+  }).then((result) => {
+    res.json(result)
+  }).catch((error) => {
+    res.json(error)
+  })
+})
+
 router.post("/update-rating/:ratingId", authentication, (req, res) => {
   const userId = res.locals.user.userId;
 
