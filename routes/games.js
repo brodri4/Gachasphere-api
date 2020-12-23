@@ -49,7 +49,7 @@ router.post("/create-rating", authentication, async (req, res) => {
         res.json({ message: error });
       });
   } else {
-    res.send({ratingCreated: false, message: "Rating already created"});
+    res.send({ratingCreated: false, ratingExists: true});
   }
 });
 
