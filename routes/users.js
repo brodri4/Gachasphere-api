@@ -84,12 +84,12 @@ router.post("/recover", async (req, res) => {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-      from: '"Fred Foo 👻" <foo@example.com>', // sender address
+      from: '"Gachasphere Support <DO_NOT_REPLY@gachasphere.com>', // sender address
       to: email, // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: `<b>Hello world?</b>
-            <a href="http://localhost:3000/#/reset/${token}">${token}</a>
+      subject: "Password Reset Request", // Subject line
+      text: "Please click on the link below to reset your password", // plain text body
+      html: `<b>Please click on the link below to reset your password</b>
+            <p><a href="http://localhost:3000/#/reset/${token}">${token}</a></p>
       `, // html body
     });
 
@@ -99,13 +99,13 @@ router.post("/recover", async (req, res) => {
     res.json({
       passwordRest: true,
       message:
-        "if that account is in our system, we emailed you a link to reset your password",
+        "if this account is in our system, we emailed you a link to reset your password",
     });
   } else {
     res.json({
       passwordRest: false,
       message:
-        "if that account is in our system, we emailed you a link to reset your password",
+        "if this account is in our system, we emailed you a link to reset your password",
     });
   }
 });
@@ -116,7 +116,7 @@ router.post("/reset/:token", async (req, res) => {
   const password = req.body.password;
   bcrypt.hash(password, SALT_ROUNDS, async (error, hash) => {
     if (error) {
-      res.json({ userAdded: false, message: "Cannot create user!" });
+      res.json({ resetPassword: false, message: "Cannot reset your password" });
     } else {
       await models.User.update(
         {
@@ -128,7 +128,10 @@ router.post("/reset/:token", async (req, res) => {
           },
         }
       ).then((a) => {
-        res.json({ test: userId, pass: password });
+        res.json({
+          resetPassword: true,
+          message: "Your password has been reset",
+        });
       });
     }
   });
