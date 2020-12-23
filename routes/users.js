@@ -77,8 +77,8 @@ router.post("/recover", async (req, res) => {
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: "kaizen1397@gmail.com", // generated ethereal user
-        pass: "MkhwmBxtZG9TWf26", // generated ethereal password
+        user: "gachasphere.dc@gmail.com", // generated ethereal user
+        pass: process.env.SENDINBLUE_PW, // generated ethereal password
       },
     });
 
