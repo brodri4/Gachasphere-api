@@ -115,6 +115,20 @@ router.get("/my-ratings", authentication, (req, res) => {
     });
 });
 
+router.delete("/delete-rating/:id", (req, res) => {
+  let ratingId = req.params.id;
+
+  models.UserGame.destroy({
+    where: {
+      id: ratingId
+    }
+  }).then((result) => {
+    res.json({ratingDeleted: true, result: result})
+  }).catch((error) => {
+    res.json({ratingDeleted: false, error: error})
+  })
+})
+
 //function section
 const calRating = async (gameID) => {
   let gameRating = await models.UserGame.findAll({
