@@ -1,6 +1,6 @@
 <h1> Gachasphere </h1>
 
-<img src="./src/images/GachasphereBlue.png" width="300" alt="Gachasphere logo"/>
+<img src="./images/GachasphereBlue.png" width="300" alt="Gachasphere logo"/>
 
 <h2>Summary </h2>
 
