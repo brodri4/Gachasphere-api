@@ -73,7 +73,7 @@ router.post("/recover", async (req, res) => {
   });
   if (persistedUser) {
     let token = jwt.sign({ userId: persistedUser.id }, process.env.TK_PASS, {
-      expiresIn: "1h",
+      expiresIn: "15m",
     });
     let transporter = nodemailer.createTransport({
       host: "smtp-relay.sendinblue.com",
