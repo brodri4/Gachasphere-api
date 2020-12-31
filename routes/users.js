@@ -46,7 +46,10 @@ router.post("/register", async (req, res) => {
   if (!persistedUser) {
     bcrypt.hash(password, SALT_ROUNDS, async (error, hash) => {
       if (error) {
-        res.json({ userAdded: false, message: "Something went wrong - user not created." });
+        res.json({
+          userAdded: false,
+          message: "Something went wrong - user not created.",
+        });
       } else {
         const user = await models.User.build({
           username: username,
@@ -88,8 +91,41 @@ router.post("/recover", async (req, res) => {
       to: email, // list of receivers
       subject: "Gachasphere Password Reset Request", // Subject line
       text: "Click the link below to reset your password.", // plain text body
-      html: `<b>Click the link below to reset your password.</b>
-            <p><a href="http://localhost:3000/#/reset/${token}">${token}</a></p>
+      html: `<div style="width:100%!important;margin:0;padding:0">
+              <center>
+                <table style="border-spacing:0;border-collapse:collapse;font-family:proxima-nova,'helvetica neue',helvetica,arial,geneva,sans-serif;width:100%!important;height:100%!important;color:#4c4c4c;font-size:15px;line-height:150%;background:#ffffff;margin:0;padding:0;border:0">
+                  <tbody>
+                    <tr style = "vertical-align:top;padding:0">
+                      <td align="center" valig="top" style = "vertical-align:top;padding:0">
+                        <table style="border-spacing:0;border-collapse:collapse;font-family:proxima-nova,'helvetica neue',helvetica,arial,geneva,sans-serif;width:600px;color:#4c4c4c;font-size:15px;line-height:150%;background:#ffffff;margin:40px 0;padding:0;border:0">
+                          <tbody>
+                            <tr style="vertical-align:top;padding:0">
+                              <td align="center" valign="top" style="style="vertical-align:top;padding:0 40px">
+                                <table style="border-spacing:0;border-collapse:collapse;font-family:proxima-nova,'helvetica neue',helvetica,arial,geneva,sans-serif;width:100%;background:#ffffff;margin:0;padding:0;border:0">
+                                  <tbody>
+                                    <tr style="vertical-align:top;padding:0">
+                                      <td style="vertical-align:top;text-align:left;padding:0" align="left" valign="top">
+                                        <h1>
+                                          <img src="https://i.postimg.cc/Y9hdHJNH/Gachasphere-Red.png" width="120" height="65" />
+                                        </h1>
+                                        <p style="margin:20px 0">Someone (hopefully you) has requested a password reset for your Gachasphere account. Click the link below to set a new password:</p>
+                                        <p style="margin:20px 0"><a href="http://localhost:3000/#/reset/${token}">${token}</a></p>
+                                        <p style="margin:20px 0">If you don't wish to reset your password, disregard this email and no action will be taken.</p>
+                                        <p style="margin:20px 0">Gachasphere Team</p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </center>
+            </div>
       `, // html body
     });
 
@@ -98,14 +134,12 @@ router.post("/recover", async (req, res) => {
 
     res.json({
       passwordRest: true,
-      message:
-        "A password reset email is on its way.",
+      message: "A password reset email is on its way.",
     });
   } else {
     res.json({
       passwordRest: false,
-      message:
-        "This email is not in our system.",
+      message: "This email is not in our system.",
     });
   }
 });
@@ -116,7 +150,10 @@ router.post("/reset/:token", async (req, res) => {
   const password = req.body.password;
   bcrypt.hash(password, SALT_ROUNDS, async (error, hash) => {
     if (error) {
-      res.json({ resetPassword: false, message: "Something went wrong - your password was not updated." });
+      res.json({
+        resetPassword: false,
+        message: "Something went wrong - your password was not updated.",
+      });
     } else {
       await models.User.update(
         {
