@@ -46,7 +46,7 @@ router.post("/register", async (req, res) => {
   if (!persistedUser) {
     bcrypt.hash(password, SALT_ROUNDS, async (error, hash) => {
       if (error) {
-        res.json({ userAdded: false, message: "Cannot create user!" });
+        res.json({ userAdded: false, message: "Something went wrong - user not created." });
       } else {
         const user = await models.User.build({
           username: username,
@@ -86,9 +86,9 @@ router.post("/recover", async (req, res) => {
     let info = await transporter.sendMail({
       from: '"Gachasphere Support <DO_NOT_REPLY@gachasphere.com>', // sender address
       to: email, // list of receivers
-      subject: "Password Reset Request", // Subject line
-      text: "Please click on the link below to reset your password", // plain text body
-      html: `<b>Please click on the link below to reset your password</b>
+      subject: "Gachasphere Password Reset Request", // Subject line
+      text: "Click the link below to reset your password.", // plain text body
+      html: `<b>Click the link below to reset your password.</b>
             <p><a href="http://localhost:3000/#/reset/${token}">${token}</a></p>
       `, // html body
     });
@@ -99,13 +99,13 @@ router.post("/recover", async (req, res) => {
     res.json({
       passwordRest: true,
       message:
-        "if this account is in our system, we emailed you a link to reset your password",
+        "A password reset email is on its way.",
     });
   } else {
     res.json({
       passwordRest: false,
       message:
-        "if this account is in our system, we emailed you a link to reset your password",
+        "This email is not in our system.",
     });
   }
 });
@@ -116,7 +116,7 @@ router.post("/reset/:token", async (req, res) => {
   const password = req.body.password;
   bcrypt.hash(password, SALT_ROUNDS, async (error, hash) => {
     if (error) {
-      res.json({ resetPassword: false, message: "Cannot reset your password" });
+      res.json({ resetPassword: false, message: "Something went wrong - your password was not updated." });
     } else {
       await models.User.update(
         {
@@ -130,7 +130,7 @@ router.post("/reset/:token", async (req, res) => {
       ).then((a) => {
         res.json({
           resetPassword: true,
-          message: "Your password has been reset",
+          message: "Your password has been updated.",
         });
       });
     }
