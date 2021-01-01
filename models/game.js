@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       averageRating: DataTypes.FLOAT,
       averageF2P: DataTypes.FLOAT,
       numberOfPlayer: DataTypes.INTEGER,
+      twitter: DataTypes.STRING
     },
     {
       sequelize,
