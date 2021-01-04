@@ -3,17 +3,20 @@ const router = express.Router();
 const models = require("../models");
 const jwt = require("jsonwebtoken");
 const authentication = require("../authMiddleware");
+// const { sequelize } = require("../models");
+const sequelize = require("sequelize");
 
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   models.Game.findAll({
-    order: [['title', 'ASC']]
+    order: [["title", "ASC"]],
   })
-  .then((result) => {
-    res.json(result)
-  }).catch((error) => {
-    res.json({ message: error });
-  })
-})
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.json({ message: error });
+    });
+});
 
 router.post("/create-rating", authentication, async (req, res) => {
   const userId = res.locals.user.userId;
@@ -43,13 +46,13 @@ router.post("/create-rating", authentication, async (req, res) => {
     UserGame.save()
       .then(async () => {
         await updateRating(gameId);
-      res.send({ratingCreated: true});
+        res.send({ ratingCreated: true });
       })
       .catch((error) => {
         res.json({ message: error });
       });
   } else {
-    res.send({ratingCreated: false, ratingExists: true});
+    res.send({ ratingCreated: false, ratingExists: true });
   }
 });
 
@@ -58,15 +61,17 @@ router.get("/single-rating/:id", authentication, (req, res) => {
 
   models.UserGame.findOne({
     where: {
-      id: ratingId
+      id: ratingId,
     },
-    include: [models.Game]
-  }).then((result) => {
-    res.json(result)
-  }).catch((error) => {
-    res.json(error)
+    include: [models.Game],
   })
-})
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.json(error);
+    });
+});
 
 router.post("/update-rating/:ratingId", authentication, (req, res) => {
   const userId = res.locals.user.userId;
@@ -115,19 +120,33 @@ router.get("/my-ratings", authentication, (req, res) => {
     });
 });
 
-router.delete("/delete-rating/:id", (req, res) => {
+router.delete("/delete-rating/:id", authentication, (req, res) => {
   let ratingId = req.params.id;
 
   models.UserGame.destroy({
     where: {
-      id: ratingId
-    }
-  }).then((result) => {
-    res.json({ratingDeleted: true, result: result})
-  }).catch((error) => {
-    res.json({ratingDeleted: false, error: error})
+      id: ratingId,
+    },
   })
-})
+    .then((result) => {
+      res.json({ ratingDeleted: true, result: result });
+    })
+    .catch((error) => {
+      res.json({ ratingDeleted: false, error: error });
+    });
+});
+
+router.post("/search-game", async (req, res) => {
+  const keyword = req.body.keyword;
+  let games = await models.Game.findAll({
+    where: {
+      title: {
+        [sequelize.Op.iLike]: `%${keyword}%`,
+      },
+    },
+  });
+  res.json(games);
+});
 
 //function section
 const calRating = async (gameID) => {
