@@ -115,7 +115,7 @@ router.get("/my-ratings", authentication, (req, res) => {
     });
 });
 
-router.delete("/delete-rating/:id", (req, res) => {
+router.delete("/delete-rating/:id", authentication, (req, res) => {
   let ratingId = req.params.id;
 
   models.UserGame.destroy({
