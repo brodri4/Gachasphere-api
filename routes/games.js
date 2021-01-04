@@ -138,14 +138,18 @@ router.delete("/delete-rating/:id", authentication, (req, res) => {
 
 router.post("/search-game", async (req, res) => {
   const keyword = req.body.keyword;
-  let games = await models.Game.findAll({
-    where: {
-      title: {
-        [sequelize.Op.iLike]: `%${keyword}%`,
+  if (keyword) {
+    let games = await models.Game.findAll({
+      where: {
+        title: {
+          [sequelize.Op.iLike]: `%${keyword}%`,
+        },
       },
-    },
-  });
-  res.json(games);
+    });
+    res.json(games);
+  } else {
+    res.json({ message: "No result" });
+  }
 });
 
 //function section
