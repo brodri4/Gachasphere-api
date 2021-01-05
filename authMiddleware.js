@@ -32,7 +32,7 @@ async function authentication(req, res, next) {
       res.json({ message: "You're not authorized!", error: "jwt verify" });
     }
   } else {
-    res.json({ message: "You're not authorized!", error: "headers"});
+    res.json({ message: "You're not authorized!", error: "headers" });
   }
 }
 
