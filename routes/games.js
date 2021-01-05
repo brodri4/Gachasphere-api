@@ -152,6 +152,24 @@ router.post("/search-game", async (req, res) => {
   }
 });
 
+router.post("/update-playing", async (req, res) => {
+  let userGameId = req.body.userGameId;
+  let playing = req.body.playing;
+  console.log(userGameId, playing);
+  models.UserGame.update(
+    {
+      playing: playing,
+    },
+    {
+      where: {
+        id: userGameId,
+      },
+    }
+  ).then(() => {
+    res.json({ message: "Updated successful" });
+  });
+});
+
 //function section
 const calRating = async (gameID) => {
   let gameRating = await models.UserGame.findAll({
