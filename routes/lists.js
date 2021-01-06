@@ -8,7 +8,7 @@ const sequelize = require("sequelize");
 
 router.post("/list-create", authentication, async (req, res) => {
   const UserId = res.locals.user.userId;
-  const Name = req.body.name;
+  const Name = req.body.Name;
   const list = await models.DetailList.build({
     UserId: UserId,
     Name: Name,
@@ -17,8 +17,8 @@ router.post("/list-create", authentication, async (req, res) => {
   list.save().then((result) => res.json({ listCreated: true }));
 });
 
-router.post("/:listId/add-game", async (req, res) => {
-  const ListId = req.params.listId;
+router.post("/add-game-to-list", async (req, res) => {
+  const ListId = req.body.listId;
   const GameId = req.body.GameId;
   let gameAdded = models.DetailListGame.build({
     GameId: GameId,
@@ -65,6 +65,20 @@ router.get("/gameList/:listId", async (req, res) => {
     } else {
       res.json({ message: "List is not available!" });
     }
+  }
+});
+
+router.get("/get-all-list", authentication, async (req, res) => {
+  const UserId = res.locals.user.userId;
+  let all_List = await models.DetailList.findAll({
+    where: {
+      UserId: 4,
+    },
+  });
+  if (all_List) {
+    res.json({ all_List: all_List, message: true });
+  } else {
+    res.json({ message: false });
   }
 });
 
