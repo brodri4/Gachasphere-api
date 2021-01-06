@@ -42,6 +42,7 @@ router.post("/delete-listGame", (req, res) => {
 
 router.get("/gameList/:listId", async (req, res) => {
   let listId = req.params.listId;
+  const UserId = res.locals.user.userId;
   if (listId) {
     let list = await models.DetailList.findOne({
       where: {
@@ -67,7 +68,6 @@ router.get("/gameList/:listId", async (req, res) => {
     }
   }
 });
-
 router.get("/get-all-list", authentication, async (req, res) => {
   const UserId = res.locals.user.userId;
   let all_List = await models.DetailList.findAll({
