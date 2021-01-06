@@ -109,7 +109,7 @@ router.post("/recover", async (req, res) => {
                                           <img src="https://i.postimg.cc/Y9hdHJNH/Gachasphere-Red.png" width="120" height="65" />
                                         </h1>
                                         <p style="margin:20px 0">Someone (hopefully you) has requested a password reset for your Gachasphere account. Click the link below to set a new password:</p>
-                                        <p style="margin:20px 0"><a href="https://gachasphere.herokuapp.com/#/reset/${token}">${token}</a></p>
+                                        <p style="margin:20px 0"><a href="http://gachasphere.surge.sh/#/reset/${token}">${token}</a></p>
                                         <p style="margin:20px 0">If you don't wish to reset your password, disregard this email and no action will be taken.</p>
                                         <p style="margin:20px 0">Gachasphere Team<br><a href="#" style="color:#6e5baa">Gachasphere....(Website URL)</a></p>
                                       </td>
