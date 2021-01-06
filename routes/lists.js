@@ -14,7 +14,9 @@ router.post("/list-create", authentication, async (req, res) => {
     Name: Name,
     IsActive: true,
   });
-  list.save().then((result) => res.json({ listCreated: true }));
+  list
+    .save()
+    .then((result) => res.json({ listCreated: true, listId: list.id }));
 });
 
 router.post("/add-game-to-list", async (req, res) => {
@@ -63,6 +65,38 @@ router.get("/gameList/:listId", async (req, res) => {
     });
     if (list) {
       res.json(list);
+    } else {
+      res.json({ message: "List is not available!" });
+    }
+  }
+});
+router.get("/myGameList/:listId", authentication, async (req, res) => {
+  const UserId = res.locals.user.userId;
+  let listId = req.params.listId;
+  if (listId) {
+    let list = await models.DetailList.findOne({
+      where: {
+        id: listId,
+      },
+      include: [
+        {
+          model: models.DetailListGame,
+          as: "gamesList",
+          include: [
+            {
+              model: models.Game,
+              as: "game",
+            },
+          ],
+        },
+      ],
+    });
+    if (list) {
+      if (list.UserId == UserId) {
+        res.json(list);
+      } else {
+        res.json({ message: "List is not available!" });
+      }
     } else {
       res.json({ message: "List is not available!" });
     }
