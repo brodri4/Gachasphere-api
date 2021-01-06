@@ -44,7 +44,6 @@ router.post("/delete-listGame", (req, res) => {
 
 router.get("/gameList/:listId", async (req, res) => {
   let listId = req.params.listId;
-  const UserId = res.locals.user.userId;
   if (listId) {
     let list = await models.DetailList.findOne({
       where: {
