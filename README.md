@@ -24,6 +24,9 @@ Once you're in, you will be able to see the global user rankings for all the top
 ## Videos and Screenshots
 
 [![Gachasphere Walkthrough Video](http://img.youtube.com/vi/sWotwScHFTo/0.jpg)](http://www.youtube.com/watch?v=sWotwScHFTo "Gachasphere Walkthrough")
+<img src="./images/gachasphereMobile.png" width="375" alt="Gachasphere mobile walkthrough"/>
+<img src="./images/emailScreenshot.png" width="600" alt="Gachasphere Forgot Password Email screenshot"/>
+
 
 ## Getting Started
 
