@@ -105,7 +105,7 @@ router.get("/get-all-list", authentication, async (req, res) => {
   const UserId = res.locals.user.userId;
   let all_List = await models.DetailList.findAll({
     where: {
-      UserId: 4,
+      UserId: UserId,
     },
   });
   if (all_List) {
